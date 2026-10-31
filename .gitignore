@@ -19,9 +19,8 @@ env/
 *.engine
 *.torchscript
 
-# 数据集（原始数据 DeepPCB / 处理后的 dataset 均为大数据，不入库）
-DeepPCB/
-dataset/
+# 数据集缓存（YOLO 训练缓存文件不入库）
+*.cache
 
 # 训练输出
 runs/

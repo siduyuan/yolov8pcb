@@ -1,0 +1,12 @@
+path: d:\CodeForge\Project\TraePro\PCB_Yolov8\dataset
+train: images/train
+val: images/val
+test: images/test
+nc: 6
+names:
+  0: open
+  1: short
+  2: mousebite
+  3: spur
+  4: copper
+  5: pin-hole
