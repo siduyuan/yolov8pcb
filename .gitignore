@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# 模型权重
+*.pt
+*.pth
+*.onnx
+*.engine
+*.torchscript
+
+# 数据集（原始数据 DeepPCB / 处理后的 dataset 均为大数据，不入库）
+DeepPCB/
+dataset/
+
+# 训练输出
+runs/
+
+# 日志
+*.log
+
+# 截图 / 临时文件
+.screenshots/
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
