@@ -34,8 +34,8 @@ PCB_Yolov8/
 ├── test.py                   # 推理测试脚本
 ├── 课程设计-软件阶段总结.md   # 软件阶段总结文档
 ├── 课程设计.pptx             # 课程设计汇报 PPT
-├── DeepPCB/                  # 原始数据集（不入库）
-├── dataset/                  # 处理后数据集（不入库）
+├── DeepPCB/                  # 原始数据集（已入库）
+├── dataset/                  # 处理后数据集（已入库，含 data.yaml）
 └── runs/                     # 训练输出（不入库）
 ```
 
@@ -51,7 +51,7 @@ PCB_Yolov8/
 
 ## 使用说明
 
-1. 准备数据集：下载 DeepPCB 数据集，运行 `prepare_dataset.py` 生成 `dataset/` 目录及 `data.yaml`。
+1. 准备数据集：`DeepPCB/` 原始数据与 `dataset/` 处理后数据（含 `data.yaml`）均已入库，克隆后可直接使用；如需重新划分可运行 `prepare_dataset.py`。
 2. 训练模型：运行 `train.py`（或根据需求使用 `train_incremental.py` / `train_rest.py`）。
 3. 推理测试：运行 `test.py`。
 
