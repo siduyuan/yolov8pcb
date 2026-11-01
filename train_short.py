@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 """关闭 mosaic 的短轮数重训（从 yolov8s.pt 从头训练 40 轮）。
 
-背景：100 轮实验（mosaic=1.0 全开）best mAP50-95=0.690，与 10 轮基线 0.679 几乎持平，
-说明瓶颈不在训练轮数。PCB 缺陷是规则几何图形，mosaic 四图拼接会破坏其规律性，
-故本次实验关闭 mosaic（mosaic=0.0），仅保留单图增强，并缩短到 40 轮观察是否更优。
+背景：100 轮实验（mosaic=1.0 全开 + lr0=0.001）best mAP50-95=0.690，与 10 轮基线 0.679
+几乎持平，说明瓶颈不在训练轮数。实测数据定位到三个确定问题：
+  1) lr0=0.001 对 AdamW 过高，参数震荡（mAP50-95 标准差高达 0.129）
+  2) mosaic=1.0 破坏 PCB 规则几何缺陷的形态，定位精度低
+  3) 100 轮在 1050 张数据上过拟合（train box loss 0.665 vs val box loss 均值 1.73）
 
-与 pcb_v8s_100 的差异：
-  - mosaic: 1.0 -> 0.0（关闭，唯一关键变量）
-  - epochs: 100 -> 40
-  - 其余（scale/fliplr/hsv_v、lr、优化器、batch、imgsz）保持一致
+与 pcb_v8s_100 的差异（三处确定性修正）：
+  - mosaic:  1.0 -> 0.0（关闭四图拼接）
+  - lr0:     0.001 -> 0.0005（AdamW 更稳，抗震荡）
+  - epochs:  100 -> 40（够收敛，避免过拟合）
+  - erasing: 0.4(默认) -> 0.0（关闭 Random Erasing，灰度 PCB 上是额外干扰）
+  - 其余（scale/fliplr/hsv_v、优化器、batch、imgsz）保持一致
 
 用法（全程由你手动执行，共约 40 × 10.5 ≈ 7 小时）：
   python train_short.py
@@ -51,8 +55,9 @@ def main():
         workers=0,
         cache="ram",
         plots=True,
+        lr0=0.0005,       # 确定性修正：AdamW 下更稳的学习率（100 轮实验的 0.001 偏高致震荡）
         # ---------- 关闭 mosaic，仅保留单图增强 ----------
-        mosaic=0.0,       # 关键变量：关闭四图拼接，避免破坏 PCB 缺陷的规则几何特征
+        mosaic=0.0,       # 确定性修正：关闭四图拼接，避免破坏 PCB 缺陷的规则几何特征
         scale=0.5,        # 随机缩放，制造更多小尺度目标
         translate=0.1,
         fliplr=0.5,
@@ -62,6 +67,7 @@ def main():
         hsv_h=0.0,        # 数据集为灰度图，色调/饱和度无意义
         hsv_s=0.0,
         hsv_v=0.3,        # 只保留亮度扰动
+        erasing=0.0,      # 确定性修正：关闭 Random Erasing（默认 0.4，灰度 PCB 上是额外干扰）
     )
 
     print(f"\n[train_short] 训练结束，best 权重: {PROJECT / NAME / 'weights' / 'best.pt'}", flush=True)
