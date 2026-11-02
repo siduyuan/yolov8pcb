@@ -1,0 +1,14 @@
+# PCB 缺陷检测数据集配置（交付版，相对路径）
+path: .
+train: dataset/images/train
+val: dataset/images/val
+test: dataset/images/test
+
+nc: 6
+names:
+  0: open
+  1: short
+  2: mousebite
+  3: spur
+  4: copper
+  5: pin-hole
